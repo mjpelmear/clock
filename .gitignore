@@ -1,0 +1,4 @@
+*.swp
+.idea
+coverage.html
+coverage.out
