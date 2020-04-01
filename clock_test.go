@@ -1,6 +1,7 @@
 package clock
 
 import (
+	"reflect"
 	"testing"
 	"time"
 )
@@ -181,4 +182,43 @@ func TestClock_TimeSince(t *testing.T) {
 		t.Errorf("expected: %s", d)
 		t.Errorf("actual:   %s", actual)
 	}
+}
+
+func TestClock_NapDurations(t *testing.T) {
+	c := NewClock()
+
+	expected := []time.Duration{
+		10 * time.Millisecond,
+		20 * time.Millisecond,
+		30 * time.Millisecond,
+	}
+
+	for _, d := range expected {
+		c.Sleep(d)
+	}
+
+	actual := c.NapDurations()
+	if !reflect.DeepEqual(actual, expected) {
+		t.Errorf("expected: %s", expected)
+		t.Errorf("actual:   %s", actual)
+	}
+}
+
+func TestClock_ClearNapDurations(t *testing.T) {
+	c := NewClock()
+
+	c.Sleep(10 * time.Millisecond)
+
+	if len(c.NapDurations()) != 1 {
+		t.Error("failed test sanity check")
+	}
+
+	c.ClearNapDurations()
+
+	if len(c.NapDurations()) != 0 {
+		t.Error("failed to clear nap durations")
+	}
+
+	// make sure we still have an initialized slice for napDurations
+	c.Sleep(10 * time.Millisecond)
 }

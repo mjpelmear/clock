@@ -11,6 +11,7 @@ type Clock struct {
 	index         int
 	nowCallback   NowCallbackFn
 	sleepCallback SleepCallbackFn
+	napDurations  []time.Duration
 }
 
 func NewClock() *Clock {
@@ -39,6 +40,7 @@ func NewClockFromCallbacks(nowFn NowCallbackFn, sleepFn SleepCallbackFn) *Clock 
 	return &Clock{
 		nowCallback:   nowFn,
 		sleepCallback: sleepFn,
+		napDurations:  []time.Duration{},
 	}
 }
 
@@ -73,9 +75,18 @@ func (c *Clock) Sleep(duration time.Duration) {
 		time.Sleep(duration)
 	} else if c.sleepCallback != nil {
 		c.sleepCallback(duration)
+		c.napDurations = append(c.napDurations, duration)
 	}
 }
 
 func (c *Clock) TimeSince(before time.Time) time.Duration {
 	return c.Now().Sub(before)
+}
+
+func (c *Clock) NapDurations() []time.Duration {
+	return c.napDurations
+}
+
+func (c *Clock) ClearNapDurations() {
+	c.napDurations = []time.Duration{}
 }
