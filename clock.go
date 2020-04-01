@@ -5,8 +5,8 @@ package clock
 
 import "time"
 
-type NowCallbackFn func (int) time.Time
-type SleepCallbackFn func (time.Duration)
+type NowCallbackFn func(int) time.Time
+type SleepCallbackFn func(time.Duration)
 type Clock struct {
 	index         int
 	nowCallback   NowCallbackFn
@@ -26,7 +26,7 @@ func NewClockFromSlice(instants ...time.Time) *Clock {
 }
 
 func slicesNowFn(instants ...time.Time) NowCallbackFn {
-	return func (i int) time.Time {
+	return func(i int) time.Time {
 		if i >= len(instants) {
 			panic("ran out of moments frozen in time")
 		} else {
@@ -45,11 +45,11 @@ func NewClockFromCallbacks(nowFn NowCallbackFn, sleepFn SleepCallbackFn) *Clock 
 func NewDefaultSleeperCallbacks(start time.Time) (NowCallbackFn, SleepCallbackFn) {
 	sleeperNow := start
 
-	nowFn := func (i int) time.Time {
+	nowFn := func(i int) time.Time {
 		return sleeperNow
 	}
 
-	sleepFn := func (d time.Duration) {
+	sleepFn := func(d time.Duration) {
 		sleeperNow = sleeperNow.Add(d)
 	}
 
@@ -61,7 +61,7 @@ func (c *Clock) Now() time.Time {
 		return time.Now()
 	}
 
-	defer func () {
+	defer func() {
 		c.index++
 	}()
 
@@ -79,5 +79,3 @@ func (c *Clock) Sleep(duration time.Duration) {
 func (c *Clock) TimeSince(before time.Time) time.Duration {
 	return c.Now().Sub(before)
 }
-
-

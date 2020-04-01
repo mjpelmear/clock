@@ -1,8 +1,8 @@
 
 GO = go
 
-format:
-	$(GO) format
+fmt:
+	$(GO) fmt
 
 vet:
 	$(GO) vet

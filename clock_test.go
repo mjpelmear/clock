@@ -86,14 +86,14 @@ func TestNewClockFromCallbacks(t *testing.T) {
 	fixedTime := time.Date(2020, 4, 1, 12, 12, 12, 0, time.UTC)
 	nowCallCt := 0
 	nowLastCalledWith := -1
-	nowFn := func (i int) time.Time {
+	nowFn := func(i int) time.Time {
 		nowCallCt++
 		nowLastCalledWith = i
 		return fixedTime
 	}
 	sleepCallCt := 0
 	sleepLastCalledWith := -1 * time.Second
-	sleepFn := func (d time.Duration) {
+	sleepFn := func(d time.Duration) {
 		sleepCallCt++
 		sleepLastCalledWith = d
 	}
@@ -127,7 +127,7 @@ func TestNewClockFromCallbacks(t *testing.T) {
 	if nowLastCalledWith != 2 { // counter increments correctly
 		t.Error("3: failed to call nowFn")
 	}
-	if sleepCallCt != 1 || sleepLastCalledWith != 1 * time.Minute {
+	if sleepCallCt != 1 || sleepLastCalledWith != 1*time.Minute {
 		t.Error("3: unexpected result calling sleepFn")
 	}
 	if !actual.Equal(fixedTime) { // our function returns the same result
@@ -146,7 +146,7 @@ func TestClock_Now(t *testing.T) {
 	diff := actual.Sub(now)
 	if diff < -tolerance || diff > tolerance {
 		t.Error("didn't return real time.Now() value as expected")
-		t.Errorf("expected: %s ± %d ms", now, tolerance / time.Millisecond)
+		t.Errorf("expected: %s ± %d ms", now, tolerance/time.Millisecond)
 		t.Errorf("actual:   %s", actual)
 	}
 }
@@ -164,8 +164,8 @@ func TestClock_Sleep(t *testing.T) {
 	diff := after.Sub(before) - d
 	if diff < -tolerance || diff > tolerance {
 		t.Error("didn't call time.Sleep() as expected")
-		t.Errorf("expected sleep: %d ± %d ms", d / time.Millisecond, tolerance / time.Millisecond)
-		t.Errorf("actual sleep:   %d ms", after.Sub(before) / time.Millisecond)
+		t.Errorf("expected sleep: %d ± %d ms", d/time.Millisecond, tolerance/time.Millisecond)
+		t.Errorf("actual sleep:   %d ms", after.Sub(before)/time.Millisecond)
 	}
 
 }
